@@ -48,7 +48,7 @@ app.command("/square", async ({ command, ack, say }) => {
 app.command("/getusers",async({command,ack,say})=>{
   try {
     say("Users in the workspace:")
-    let users=await fetch("https://slack.com/api/users.list",{method:"GET",headers:{Authorization: "Bearer xoxb-2345683667521-4288251183958-VSGLRcG7tN84RuLesfJOGYGc"}}).then(res=>res.json()).then(res=>res)
+    let users=await fetch("https://slack.com/api/users.list",{method:"GET",headers:{Authorization: "Bearer xoxb-2345683667521-4362553405635-mcDm8bnTOXcu6s7DnMD8jyLa"}}).then(res=>res.json()).then(res=>res)
     let user1 = users.members?.map(user=>user.name)
     
     user1.forEach(r=>say(JSON.stringify(r)))
@@ -62,7 +62,7 @@ app.command("/getusers",async({command,ack,say})=>{
 app.command("/getchannels",async({command,ack,say})=>{
   try {
     say("Channels in the workspace:")
-    let users=await fetch("https://slack.com/api/conversations.list",{method:"GET",headers:{Authorization: "Bearer xoxb-2345683667521-4288251183958-VSGLRcG7tN84RuLesfJOGYGc"}}).then(res=>res.json()).then(res=>(res))
+    let users=await fetch("https://slack.com/api/conversations.list",{method:"GET",headers:{Authorization: "Bearer xoxb-2345683667521-4362553405635-mcDm8bnTOXcu6s7DnMD8jyLa"}}).then(res=>res.json()).then(res=>(res))
     let user1 = users.channels?.map(user=>user.name)
     console.log(user1)
     user1.forEach(r=>say(JSON.stringify(r)))
