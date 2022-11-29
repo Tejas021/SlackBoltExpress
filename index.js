@@ -10,6 +10,7 @@ const boltReceiver = new ExpressReceiver({
     endpoints: '/new/slack/events'
 })
 
+
 const app = new App({
     token: "xoxb-2345683667521-4362553405635-mcDm8bnTOXcu6s7DnMD8jyLa", //Find in the Oauth  & Permissions tab
     signingSecret: "01db0ebc393de5ec4e28f075a566c8e6", // Find in Basic Information Tab
@@ -46,7 +47,9 @@ app.command("/square", async ({ command, ack, say }) => {
 
 
 app.command("/getusers",async({command,ack,say})=>{
+  await ack();
   try {
+    
     say("Users in the workspace:")
     let users=await fetch("https://slack.com/api/users.list",{method:"GET",headers:{Authorization: "Bearer xoxb-2345683667521-4362553405635-mcDm8bnTOXcu6s7DnMD8jyLa"}}).then(res=>res.json()).then(res=>res)
     let user1 = users.members?.map(user=>user.name)
