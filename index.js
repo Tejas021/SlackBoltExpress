@@ -1,21 +1,22 @@
 const { App, ExpressReceiver } = require("@slack/bolt");
-const Axios = require('axios')
+const Axios = require('axios');
+const { text } = require("express");
 const express  = require("express")
 const app1 = require("./app")
 // const app1 = express()
 
 const boltReceiver = new ExpressReceiver({
-    signingSecret:"01db0ebc393de5ec4e28f075a566c8e6",
+    signingSecret:"09ce0fcfa673e689cb8ed9c7b0b17e5f",
     router: app1,
     endpoints: '/new/slack/events'
 })
 
 
 const app = new App({
-    token: "xoxb-2345683667521-4362553405635-mcDm8bnTOXcu6s7DnMD8jyLa", //Find in the Oauth  & Permissions tab
-    signingSecret: "01db0ebc393de5ec4e28f075a566c8e6", // Find in Basic Information Tab
+    token: "xoxb-2345683667521-4652214505764-LFMRhjGfcwQtM0onkfb33pZ0", //Find in the Oauth  & Permissions tab
+    signingSecret: "09ce0fcfa673e689cb8ed9c7b0b17e5f", // Find in Basic Information Tab
    receiver:boltReceiver,
-    appToken: "xapp-1-A04A838AL8P-4375297425969-a7b76f3375b323aab165afd3abdd370722da4541fd300aed1376d9acd51b67ba"
+    appToken: "xapp-1-A04JP5AEAQ7-4673421126160-23e87ee7753574fb0a6c8da2d559128327afca6883d527b120604ab03c2e8ec4"
 });
 
 const getWeather = async (city) => {
@@ -51,7 +52,7 @@ app.command("/getusers",async({command,ack,say})=>{
   try {
     
     say("Users in the workspace:")
-    let users=await fetch("https://slack.com/api/users.list",{method:"GET",headers:{Authorization: "Bearer xoxb-2345683667521-4362553405635-mcDm8bnTOXcu6s7DnMD8jyLa"}}).then(res=>res.json()).then(res=>res)
+    let users=await fetch("https://slack.com/api/users.list",{method:"GET",headers:{Authorization: "Bearer xoxb-2345683667521-4652214505764-LFMRhjGfcwQtM0onkfb33pZ0"}}).then(res=>res.json()).then(res=>res)
     let user1 = users.members?.map(user=>user.name)
     
     user1.forEach(r=>say(JSON.stringify(r)))
@@ -65,7 +66,7 @@ app.command("/getusers",async({command,ack,say})=>{
 app.command("/getchannels",async({command,ack,say})=>{
   try {
     say("Channels in the workspace:")
-    let users=await fetch("https://slack.com/api/conversations.list",{method:"GET",headers:{Authorization: "Bearer xoxb-2345683667521-4362553405635-mcDm8bnTOXcu6s7DnMD8jyLa"}}).then(res=>res.json()).then(res=>(res))
+    let users=await fetch("https://slack.com/api/conversations.list",{method:"GET",headers:{Authorization: "Bearer xoxb-2345683667521-4652214505764-LFMRhjGfcwQtM0onkfb33pZ0"}}).then(res=>res.json()).then(res=>(res))
     let user1 = users.channels?.map(user=>user.name)
     console.log(user1)
     user1.forEach(r=>say(JSON.stringify(r)))
@@ -90,10 +91,78 @@ app.command("/getweather", async ({ command, ack, say }) => {
   }
 })
 
+//SWITCH CASE RESPONSE USONG SLASG COMMANDS
 
-app.message("hello", async ({ command, say }) => { // Replace hello with the message
-    try {
-      say("Hi! Thanks for PM'ing me!");
+app.command("/chat",async ({ command, ack, say }) => {
+  console.log(command.text)
+  ack()
+  try {
+    switch(command.text){
+      case "hello":
+        say("Hello from bot");
+        break;
+      case "hi":
+        say("Hi from bot")
+        break;
+      default:
+        say("say it again")
+    }
+  } catch (error) {
+    console.log("err")
+    console.error(error);
+  }
+})
+
+//SWITCH CASE RESPONSE USING APP MENTIONS
+
+app.event("app_mention",async({event, client, logger})=>{
+  let text=event.text.substr(event.text.indexOf(" ") + 1)
+  let message
+  switch(text){
+    case "hello":
+      message="hello from bot"
+      break;
+    case "hi":
+      message="hi from bot"
+      break;
+    default:
+      message="say again"
+      
+  }
+  try {
+    // Call chat.postMessage with the built-in client
+    const result = await client.chat.postMessage({
+      channel:event.channel,
+      text: `Welcome to the team, <@${event.user}>! ${message}`
+    });
+    logger.info(result);
+  }
+  catch (error) {
+    logger.error(error);
+  }
+
+  
+})
+
+
+//SWITCH CASE RESPONSE USING MESSAGE
+
+app.message("", async ({ message, say }) => { // Replace hello with the message
+  console.log(message.text) 
+  try {
+      
+      switch(message.text){
+        case "hello":
+          say("Hello from bot");
+          break;
+        case "hi":
+          say("Hi from bot")
+          break;
+        default:
+          say("say it again")
+      }
+
+      // say("Hi! Thanks for PM'ing me!"+" "+`this tect is from ${message.user} in team ${message.team}`);
     } catch (error) {
         console.log("err")
       console.error(error);
