@@ -147,7 +147,7 @@ app.event("app_mention",async({event, client, logger})=>{
 
 //SWITCH CASE RESPONSE USING MESSAGE
 
-app.message("", async ({ message, say }) => { // Replace hello with the message
+app.message("com", async ({ message, say }) => { // Replace hello with the message
   console.log(message.text) 
   try {
       
